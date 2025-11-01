@@ -1,0 +1,67 @@
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# Documentation source files (only push built docs)
+docs/source/
+docs/_build/doctrees/
+docs/build.sh
+docs/Makefile
+docs/make.bat
+docs/requirements.txt
+
+# Client source files (only push built client)
+client/src/
+client/build.sh
+client/package.json
+client/package-lock.json
+
+# Node.js
+# Exclude root-level and api source node_modules, but keep client/dist modules
+/node_modules/
+/api/source/node_modules/
+npm-debug.log
+yarn-error.log
+.npm/
+# Important: client/dist/js/modules/node_modules/ must be included for the app to work
+!/client/dist/js/modules/node_modules/
+
+# Development and testing
+test/
+.env
+.env.local
+.env.*.local
+*.test.js
+*.spec.js
+.vscode/
+.idea/
+
+# Docker files (not needed for CF deployment)
+Dockerfile
+docker-compose.yml
+docker-build.sh
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Build artifacts and temp files
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+CONTRIBUTING.md
+LICENSE
+CHANGELOG.md
+
+# Scripts not needed in production
+scripts/
+launchers/

@@ -1,0 +1,13 @@
+{
+  "name": "stig-manager-cf",
+  "version": "1.5.14",
+  "description": "STIG Manager - Cloud Foundry Deployment",
+  "private": true,
+  "scripts": {
+    "preinstall": "cd api/source && npm install",
+    "start": "node start.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

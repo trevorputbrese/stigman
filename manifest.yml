@@ -1,0 +1,44 @@
+---
+applications:
+- name: stigman
+  memory: 1G
+  instances: 1
+  buildpacks:
+    - nodejs_buildpack
+  path: .
+
+  # Cloud Foundry environment variables
+  # Note: PORT is set automatically by CF and mapped to STIGMAN_API_PORT in start.js
+  env:
+    # Let client and docs use default paths (../../client/dist and ../../docs/_build/html)
+    # These are relative to /api/source/bootstrap/ and resolve correctly
+    STIGMAN_DOCS_DISABLED: "true"
+
+    # Okta OIDC Provider
+    STIGMAN_OIDC_PROVIDER: https://dev-40682508.okta.com/oauth2/ausrabzliwPDXGfJ25d7	
+
+    STIGMAN_CLIENT_ID: 0oarabqbuwydW1Ebl5d7
+    STIGMAN_JWT_SCOPE_CLAIM: scp
+    STIGMAN_JWT_PRIVILEGES_CLAIM: groups
+
+    # Optional: Set classification banner (U, C, S, TS, etc.)
+    STIGMAN_CLASSIFICATION: U
+
+    # Optional: Disable Swagger UI in production
+    STIGMAN_SWAGGER_ENABLED: "false"
+
+    # Database credentials will be automatically set from VCAP_SERVICES
+    # by the start.js wrapper script
+
+  # Bind to MySQL service instance
+  services:
+    - mysql-stig-db
+
+  # Health check configuration
+  health-check-type: http
+  health-check-http-endpoint: /api/op/configuration
+  timeout: 180
+
+  # Routes configuration
+  # Cloud Foundry will create route: stigman.<your-domain>
+  # Or specify explicitly: routes: [{ route: stigman.your-domain.com }]

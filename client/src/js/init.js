@@ -109,7 +109,7 @@ import { stylesheets, scripts, isMinimizedSource } from './resources.js'
       OW.token = response.accessToken
       OW.tokenParsed = response.accessTokenPayload
       // appendStatus(`getAccessToken`)
-      loadResources()
+      await loadResources()
     } else if (response.redirect) {
       sessionStorage.setItem('codeVerifier', response.codeVerifier)
       sessionStorage.setItem('oidcState', response.state)
@@ -149,7 +149,7 @@ import { stylesheets, scripts, isMinimizedSource } from './resources.js'
       window.history.replaceState(window.history.state, '', redirectUri)
       sessionStorage.removeItem('codeVerifier')
       sessionStorage.removeItem('oidcState')
-      loadResources()
+      await loadResources()
     }
     else {
       appendError(response.error || 'Failed to exchange code for token')
@@ -176,29 +176,55 @@ import { stylesheets, scripts, isMinimizedSource } from './resources.js'
   }
 
   async function loadResources() {
-    for (const href of stylesheets) {
-      const link = document.createElement('link')
-      link.href = href
-      link.type = 'text/css'
-      link.rel = 'stylesheet'
-      link.async = false
-      document.head.appendChild(link)
+    try {
+      for (const href of stylesheets) {
+        const link = document.createElement('link')
+        link.href = href
+        link.type = 'text/css'
+        link.rel = 'stylesheet'
+        link.async = false
+        document.head.appendChild(link)
+      }
+
+      try {
+        const { Chart } = await import('./modules/node_modules/chart.js/auto/auto.js')
+        window.Chart = Chart
+      } catch (error) {
+        console.error('[init] Failed to load chart.js:', error)
+        appendError(`Failed to load chart.js module: ${error.message}. Please ensure the client distribution includes the modules directory.`)
+        throw error
+      }
+
+      for (const src of scripts) {
+        const script = document.createElement('script')
+        script.src = src
+        script.async = false
+        document.head.appendChild(script)
+      }
+      
+      try {
+        const { serializeError } = await import('./modules/node_modules/serialize-error/index.js')
+        STIGMAN.serializeError = serializeError
+      } catch (error) {
+        console.error('[init] Failed to load serialize-error:', error)
+        appendError(`Failed to load serialize-error module: ${error.message}`)
+        throw error
+      }
+      
+      try {
+        STIGMAN.ClientModules = await import('./modules/node_modules/@nuwcdivnpt/stig-manager-client-modules/index.js')
+      } catch (error) {
+        console.error('[init] Failed to load client modules:', error)
+        appendError(`Failed to load client modules: ${error.message}`)
+        throw error
+      }
+
+      STIGMAN.isMinimizedSource = isMinimizedSource
+    } catch (error) {
+      console.error('[init] Error in loadResources:', error)
+      appendError(`Failed to load application resources: ${error.message}`)
+      throw error
     }
-
-    const { Chart } = await import('./modules/node_modules/chart.js/auto/auto.js')
-    window.Chart = Chart
-
-    for (const src of scripts) {
-      const script = document.createElement('script')
-      script.src = src
-      script.async = false
-      document.head.appendChild(script)
-    }
-    const { serializeError } = await import('./modules/node_modules/serialize-error/index.js')
-    STIGMAN.serializeError = serializeError
-    STIGMAN.ClientModules = await import('./modules/node_modules/@nuwcdivnpt/stig-manager-client-modules/index.js')
-
-    STIGMAN.isMinimizedSource = isMinimizedSource
   }
 
   async function setupOidcWorker() {
