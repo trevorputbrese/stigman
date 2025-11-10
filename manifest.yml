@@ -15,9 +15,9 @@ applications:
     STIGMAN_DOCS_DISABLED: "false"
 
     # Okta OIDC Provider
-    STIGMAN_OIDC_PROVIDER: https://dev-40682508.okta.com/oauth2/ausrabzliwPDXGfJ25d7	
+    STIGMAN_OIDC_PROVIDER: [INSERT OIDC PROVIDER URL]
 
-    STIGMAN_CLIENT_ID: 0oarabqbuwydW1Ebl5d7
+    STIGMAN_CLIENT_ID:  #add OIDC client ID here
     STIGMAN_JWT_SCOPE_CLAIM: scp
     STIGMAN_JWT_PRIVILEGES_CLAIM: groups
 
@@ -31,8 +31,9 @@ applications:
     # by the start.js wrapper script
 
   # Bind to MySQL service instance
+  # CF push will fail if you don't have a mysql service instance provisioned and listed below
   services:
-    - mysql-stig-db
+    - [INSERT NAME OF MYSQL SERVICE INSTANCE]
 
   # Health check configuration
   health-check-type: http
