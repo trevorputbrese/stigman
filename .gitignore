@@ -38,3 +38,7 @@ coverage/
 
 # macOS file
 .DS_Store
+
+# Appdata - only commit compressed .jsonl.gz files
+data/appdata/**/*.json
+data/appdata/**/*.jsonl

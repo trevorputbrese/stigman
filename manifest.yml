@@ -33,7 +33,7 @@ applications:
   # Bind to MySQL service instance
   # CF push will fail if you don't have a mysql service instance provisioned and listed below
   services:
-    - [INSERT NAME OF MYSQL SERVICE INSTANCE]
+    - [INSERT NAME OF MYSQL INSTANCE]
 
   # Health check configuration
   health-check-type: http
