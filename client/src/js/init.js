@@ -50,10 +50,9 @@ import { stylesheets, scripts, isMinimizedSource } from './resources.js'
         OW.tokenParsed = null
       }
     }
-    appendStatus(`Authorizing`)
-
     const paramStr = extractParamString(url)
     if (paramStr) {
+      appendStatus(`Authorizing`)
       return handleRedirectAndParameters(redirectUri, paramStr)
     }
     else {
@@ -111,10 +110,57 @@ import { stylesheets, scripts, isMinimizedSource } from './resources.js'
       // appendStatus(`getAccessToken`)
       await loadResources()
     } else if (response.redirect) {
-      sessionStorage.setItem('codeVerifier', response.codeVerifier)
-      sessionStorage.setItem('oidcState', response.state)
-      window.location.href = response.redirect
+      // Show login page instead of automatically redirecting
+      showLoginPage(response)
     }
+  }
+
+  function showLoginPage(authResponse) {
+    hideSpinner()
+    // Store auth info for when user clicks login button
+    if (authResponse.codeVerifier && authResponse.state) {
+      sessionStorage.setItem('codeVerifier', authResponse.codeVerifier)
+      sessionStorage.setItem('oidcState', authResponse.state)
+    }
+    
+    const loginButtonId = 'okta-login-button'
+    const redirectUrl = authResponse.redirect
+    
+    setStatus(`
+      <div style="text-align: center; margin-top: 40px;">
+        <h2 style="font-size: 24px; margin-bottom: 30px; font-weight: normal;">Welcome to STIG Manager</h2>
+        <p style="font-size: 14px; margin-bottom: 30px; color: #a0a0a0;">Please sign in to continue</p>
+        <button 
+          id="${loginButtonId}" 
+          style="
+            background-color: #007dc1;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.2s;
+          "
+          onmouseover="this.style.backgroundColor='#006ba6'"
+          onmouseout="this.style.backgroundColor='#007dc1'"
+        >
+          Login with Okta
+        </button>
+      </div>
+    `)
+    
+    // Add click handler to redirect to Okta (use setTimeout to ensure DOM is updated)
+    setTimeout(() => {
+      const loginButton = document.getElementById(loginButtonId)
+      if (loginButton && redirectUrl) {
+        loginButton.addEventListener('click', () => {
+          window.location.href = redirectUrl
+        })
+      }
+    }, 0)
   }
 
   async function handleRedirectAndParameters(redirectUri, paramStr) {

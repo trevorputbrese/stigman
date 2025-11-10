@@ -12,7 +12,7 @@ applications:
   env:
     # Let client and docs use default paths (../../client/dist and ../../docs/_build/html)
     # These are relative to /api/source/bootstrap/ and resolve correctly
-    STIGMAN_DOCS_DISABLED: "true"
+    STIGMAN_DOCS_DISABLED: "false"
 
     # Okta OIDC Provider
     STIGMAN_OIDC_PROVIDER: https://dev-40682508.okta.com/oauth2/ausrabzliwPDXGfJ25d7	

@@ -1,0 +1,16 @@
+applications:
+- name: stigman
+  memory: 1G
+  buildpacks:
+    - nodejs_buildpack
+  path: .
+  env:
+    STIGMAN_DOCS_DISABLED: "false"
+    STIGMAN_OIDC_PROVIDER: https://dev-40682508.okta.com/oauth2/ausrabzliwPDXGfJ25d7	
+    STIGMAN_CLIENT_ID: 0oarabqbuwydW1Ebl5d7
+    STIGMAN_JWT_SCOPE_CLAIM: scp
+    STIGMAN_JWT_PRIVILEGES_CLAIM: groups
+    STIGMAN_CLASSIFICATION: U
+    STIGMAN_SWAGGER_ENABLED: "false"
+  services:
+    - mysql-stig-db
